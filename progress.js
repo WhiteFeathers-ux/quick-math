@@ -5,7 +5,7 @@ function node(tag,text,className){const e=document.createElement(tag);if(text!==
 function saveRound(completed){
  if(!state?.total)return;
  const average=state.times.length?state.times.reduce((a,b)=>a+b,0)/state.times.length:null;
- const record={id:state.id,correct:state.correct,total:state.total,level:state.level,average,date:state.started,operation:state.operation,duration:state.duration,seconds:Math.min(elapsed()/1000,state.duration||Infinity),best:state.best,topics:state.topics,completed};
+ const record={timing:'instant-v1',id:state.id,correct:state.correct,total:state.total,level:state.level,average,date:state.started,operation:state.operation,duration:state.duration,seconds:Math.min(elapsed()/1000,state.duration||Infinity),best:state.best,topics:state.topics,completed};
  const index=history.findIndex(r=>r.id===record.id);
  if(index<0)history.push(record);else history[index]=record;
  try{localStorage.setItem(storageKey,JSON.stringify(history));$('storage-warning').textContent='';}catch(e){$('storage-warning').textContent='Saving unavailable. Use Progress → Save backup before closing.';}
@@ -29,6 +29,7 @@ function metric(value,label){const e=node('div',undefined,'metric');e.append(nod
 function chosenRows(){const level=$('progress-level').value;return history.filter(r=>r.total>0&&(level==='all'||r.level===+level));}
 function renderProgress(){
  const root=$('progress-content');root.replaceChildren();$('save-status').textContent='';
+ $('progress-level').disabled=progressTab==='levels';
  document.querySelectorAll('[data-progress-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.progressTab===progressTab)));
  if(progressTab==='levels'){renderLevels(root);return;}
  const rows=chosenRows();
@@ -41,7 +42,7 @@ function renderProgress(){
  const coach=node('div',undefined,'coaching');coach.append(node('h2',rows.length?'Your next step':'Build your starting point'));
  if(!rows.length){coach.append(node('p','Play one short round at a comfortable level. Aim for accurate answers first, then work toward the pace guide.'));}
  else{
-  const latest=rows[rows.length-1];const peers=rows.filter(r=>r.level===latest.level&&r.operation===latest.operation&&r.duration===latest.duration).slice(-6);
+  const latest=rows[rows.length-1];const peers=rows.filter(r=>r.level===latest.level&&r.operation===latest.operation&&r.duration===latest.duration&&r.timing===latest.timing).slice(-6);
   const recent=summary(peers.slice(-3));
   const ready=recent.total>=30&&recent.accuracy>=90&&recent.average!==null&&recent.average<=targets[latest.level];
   coach.append(node('p',ready?`${levelNames[latest.level]}: strong accuracy at the target pace. Try a harder level or a different focus.`:recent.accuracy<90?`Stay with ${levelNames[latest.level]}. Slow down until answers feel dependable, aiming for 90% accuracy.`:`Keep practicing ${levelNames[latest.level]}. Build at least 30 recent answers at 90% accuracy and near the pace guide before moving up.`));
