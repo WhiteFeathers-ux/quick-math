@@ -204,7 +204,7 @@ function renderLevels(root){
  levelNames.forEach((name,level)=>{const rows=history.filter(r=>r.level===level),s=summary(rows),recent=summary(rows.slice(-3));let status=!s.total?'Not started':recent.total<30?'Building a baseline':recent.accuracy<90?'Accuracy first':recent.average!==null&&recent.average<=targets[level]?'Ready to stretch':'Build speed';const tr=node('tr');for(const value of [`${level+1} · ${name}`,String(s.total),percent(s.accuracy),seconds(s.average),status])tr.append(node('td',value));body.append(tr);});root.append(t,node('p','Status uses the latest 3 rounds: 30+ answers, 90% accuracy, and the level’s pace guide. Practice guidance, not a mastery score.','progress-note'));
 }
 function renderHistory(root,rows){
- const latest=rows.slice().reverse();const count=5,pages=Math.max(1,Math.ceil(latest.length/count));historyPage=Math.min(historyPage,pages-1);
+ const latest=rows.slice().reverse();const count=innerWidth<=700?(innerHeight<=620?3:4):5,pages=Math.max(1,Math.ceil(latest.length/count));historyPage=Math.min(historyPage,pages-1);
  const [t,body]=table(['When','Level','Correct','Accuracy','Speed']);
  for(const r of latest.slice(historyPage*count,(historyPage+1)*count)){const tr=node('tr'),d=new Date(r.date);const date=Number.isFinite(+d)?d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}):'Earlier';for(const v of [date,levelNames[r.level]||'Earlier round',`${r.correct}/${r.total}`,percent(r.correct/r.total*100),seconds(Number.isFinite(r.average)?r.average:null)])tr.append(node('td',v));body.append(tr);}
  root.append(t);if(!latest.length)root.append(node('p','No rounds yet. Start practicing to make your first entry.','progress-note'));
