@@ -55,7 +55,7 @@ function renderProgress(){
 }
 function table(headers){const t=node('table',undefined,'progress-table'),thead=node('thead'),tr=node('tr'),body=node('tbody');for(const h of headers)tr.append(node('th',h));thead.append(tr);t.append(thead,body);return [t,body];}
 function renderLevels(root){
- const [t,body]=table(['Level','Answers','Accuracy','Speed','Practice status']);
+ const [t,body]=table(['Level','Answers','Accuracy','Speed','Practice status']);t.classList.add('level-table');
  levelNames.forEach((name,level)=>{const rows=history.filter(r=>r.level===level),s=summary(rows),recent=summary(rows.slice(-3));let status=!s.total?'Not started':recent.total<30?'Building a baseline':recent.accuracy<90?'Accuracy first':recent.average!==null&&recent.average<=targets[level]?'Ready to stretch':'Build speed';const tr=node('tr');for(const value of [`${level+1} · ${name}`,String(s.total),percent(s.accuracy),seconds(s.average),status])tr.append(node('td',value));body.append(tr);});root.append(t,node('p','Status uses the latest 3 rounds: 30+ answers, 90% accuracy, and the level’s pace guide. Practice guidance, not a mastery score.','progress-note'));
 }
 function renderHistory(root,rows){

@@ -20,3 +20,5 @@
  #play .keypad{margin-top:6px;gap:4px}#play .pace{display:none}
  #play .answer-actions{margin-top:6px}
 }
+
+@media(max-width:700px){.level-table th:nth-child(4),.level-table td:nth-child(4){display:none}.level-table th,.level-table td{padding-top:7px;padding-bottom:7px}}
