@@ -7,7 +7,7 @@
 @media(pointer:fine){.keypad{display:none!important}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
-.keypad button{touch-action:manipulation;user-select:none;-webkit-user-select:none;font-variant-numeric:tabular-nums}.keypad .zero-key{grid-column:span 2}.keypad button:active{background:var(--lime);border-color:var(--green)}
+.keypad button{touch-action:manipulation;user-select:none;-webkit-user-select:none;font-variant-numeric:tabular-nums}.keypad button:active{background:var(--lime);border-color:var(--green)}
 @media(max-width:700px){.keypad button{min-height:48px;font-size:22px}.keypad .utility{font-size:13px}.answer-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}#answer{margin-top:8px}body:has(#play:not([hidden])) footer{display:none}}
 @media(max-width:700px) and (max-height:700px){.keypad button{min-height:44px}.keypad{gap:5px}#play .stats{margin:6px 0}#play .problem{margin-top:8px}}
 @media(max-width:700px) and (max-height:620px){
@@ -22,3 +22,10 @@
 }
 
 @media(max-width:700px){.level-table th:nth-child(4),.level-table td:nth-child(4){display:none}.level-table th,.level-table td{padding-top:7px;padding-bottom:7px}}
+
+.keypad{grid-template-columns:minmax(0,1fr) 54px;gap:12px}
+.number-keys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.math-keys{display:grid;grid-template-rows:repeat(3,1fr);gap:6px;border-left:1px solid var(--line);padding-left:10px}
+.math-keys button{font-size:16px!important;padding:4px;background:var(--bg)}
+.math-keys button.utility{font-size:11px!important}
+@media(max-width:700px) and (max-height:700px){.number-keys{gap:5px}#play .keypad{gap:12px}}

@@ -10,7 +10,7 @@
 @media(pointer:fine){.keypad{display:none!important}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
-.keypad button{touch-action:manipulation;user-select:none;-webkit-user-select:none;font-variant-numeric:tabular-nums}.keypad .zero-key{grid-column:span 2}.keypad button:active{background:var(--lime);border-color:var(--green)}
+.keypad button{touch-action:manipulation;user-select:none;-webkit-user-select:none;font-variant-numeric:tabular-nums}.keypad button:active{background:var(--lime);border-color:var(--green)}
 @media(max-width:700px){.keypad button{min-height:48px;font-size:22px}.keypad .utility{font-size:13px}.answer-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}#answer{margin-top:8px}body:has(#play:not([hidden])) footer{display:none}}
 @media(max-width:700px) and (max-height:700px){.keypad button{min-height:44px}.keypad{gap:5px}#play .stats{margin:6px 0}#play .problem{margin-top:8px}}
 @media(max-width:700px) and (max-height:620px){
@@ -25,6 +25,13 @@
 }
 
 @media(max-width:700px){.level-table th:nth-child(4),.level-table td:nth-child(4){display:none}.level-table th,.level-table td{padding-top:7px;padding-bottom:7px}}
+
+.keypad{grid-template-columns:minmax(0,1fr) 54px;gap:12px}
+.number-keys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.math-keys{display:grid;grid-template-rows:repeat(3,1fr);gap:6px;border-left:1px solid var(--line);padding-left:10px}
+.math-keys button{font-size:16px!important;padding:4px;background:var(--bg)}
+.math-keys button.utility{font-size:11px!important}
+@media(max-width:700px) and (max-height:700px){.number-keys{gap:5px}#play .keypad{gap:12px}}
 
 </style></head><body>
 <header><div class="brand"><span class="mark" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h8M7 2v8M12 13h6M12 17h6"/></svg></span>Quick Math</div><nav aria-label="Main navigation"><button id="nav-practice" aria-current="page">Practice</button><button id="nav-progress">Progress</button></nav></header>
@@ -118,7 +125,12 @@ function resume(){if(!state||!state.paused||state.done)return;state.questionStar
 function finish(){clearAuto();if(!state||state.done)return;const activeSeconds=Math.min(elapsed()/1000,state.duration||Infinity);state.done=true;clearInterval(timer);screen('results');const accuracy=state.total?Math.round(state.correct/state.total*100):0;const average=state.times.length?state.times.reduce((a,b)=>a+b,0)/state.times.length:null;$('result-correct').textContent=`${state.correct}/${state.total}`;$('result-accuracy').textContent=state.total?accuracy+'%':'—';$('result-speed').textContent=average===null?'—':average.toFixed(1)+'s';$('result-message').textContent=!state.total?'A fresh start is one round away.':accuracy>=90?'Accuracy is looking strong. Keep this pace, or try the next level.':accuracy>=70?'A solid start. Repeat this level and let accuracy lead.':'Slow it down. Try untimed practice and build a reliable rhythm.';$('result-detail').textContent=`${Math.round(activeSeconds)} seconds practiced · Best streak: ${state.best}. Skips count toward accuracy; unfinished questions do not. Average time uses correct answers only.`;if(state.total)saveRound(true);reviewIndex=0;renderReview();$('again').focus();}
 $('start').onclick=start;$('again').onclick=start;$('change').onclick=()=>{screen('setup');setupLevel();$('level').focus();};$('answer-form').onsubmit=e=>{e.preventDefault();submit();};$('skip').onclick=()=>submit(true);$('next').onclick=next;$('pause').onclick=pause;$('resume').onclick=resume;$('finish').onclick=finish;
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
-for(const key of ['7','8','9','⌫','4','5','6','Clear','1','2','3','±','0','.','/']){const b=document.createElement('button');b.type='button';b.textContent=key;if(['⌫','Clear'].includes(key))b.className='utility';if(key==='0')b.classList.add('zero-key');if(key==='±')b.setAttribute('aria-label','Toggle negative sign');if(key==='⌫')b.setAttribute('aria-label','Delete last digit');b.onclick=()=>{const a=$('answer');if(key==='Clear')a.value='';else if(key==='⌫')a.value=a.value.slice(0,-1);else if(key==='±')a.value=a.value.startsWith('-')?a.value.slice(1):'-'+a.value;else if(a.value.length<32)a.value+=key;queueAnswer();};document.querySelector('.keypad').append(b);}
+const keypad=document.querySelector('.keypad');
+const numberKeys=document.createElement('div');numberKeys.className='number-keys';
+const mathKeys=document.createElement('div');mathKeys.className='math-keys';mathKeys.setAttribute('role','group');mathKeys.setAttribute('aria-label','Math and editing controls');
+keypad.append(numberKeys,mathKeys);
+for(const key of ['1','2','3','4','5','6','7','8','9','.','0','⌫','±','/','Clear']){const b=document.createElement('button');b.type='button';b.textContent=key;if(['⌫','Clear'].includes(key))b.className='utility';if(key==='±')b.setAttribute('aria-label','Toggle negative sign');if(key==='⌫')b.setAttribute('aria-label','Delete last digit');b.onclick=()=>{const a=$('answer');if(key==='Clear')a.value='';else if(key==='⌫')a.value=a.value.slice(0,-1);else if(key==='±')a.value=a.value.startsWith('-')?a.value.slice(1):'-'+a.value;else if(a.value.length<32)a.value+=key;queueAnswer();};(['±','/','Clear'].includes(key)?mathKeys:numberKeys).append(b);}
+
 setupLevel();
 
 function clearAuto(){clearTimeout(autoTimer);clearTimeout(advanceTimer);}
