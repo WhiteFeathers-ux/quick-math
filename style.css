@@ -10,3 +10,13 @@
 .keypad button{touch-action:manipulation;user-select:none;-webkit-user-select:none;font-variant-numeric:tabular-nums}.keypad .zero-key{grid-column:span 2}.keypad button:active{background:var(--lime);border-color:var(--green)}
 @media(max-width:700px){.keypad button{min-height:48px;font-size:22px}.keypad .utility{font-size:13px}.answer-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}#answer{margin-top:8px}body:has(#play:not([hidden])) footer{display:none}}
 @media(max-width:700px) and (max-height:700px){.keypad button{min-height:44px}.keypad{gap:5px}#play .stats{margin:6px 0}#play .problem{margin-top:8px}}
+@media(max-width:700px) and (max-height:620px){
+ body:has(#play:not([hidden])) header{padding-top:6px;padding-bottom:6px}
+ body:has(#play:not([hidden])) main{padding-top:6px;padding-bottom:6px}
+ #play .game-head{min-height:34px}#play .game-head button{min-height:34px}
+ #play .stats{margin:4px 0}#play .stats .metric strong{font-size:20px}
+ #play .problem{padding:8px;margin-top:6px}#play .topic{margin-bottom:4px}
+ #play #question{font-size:22px;min-height:32px}#play #answer{font-size:24px;padding:6px;margin-top:4px}
+ #play .keypad{margin-top:6px;gap:4px}#play .pace{display:none}
+ #play .answer-actions{margin-top:6px}
+}
